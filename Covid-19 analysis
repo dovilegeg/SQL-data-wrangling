@@ -26,7 +26,7 @@ FROM covid_deaths
 GROUP BY location
 ORDER BY mortality_rate desc;
 
-# Mortality rate by country in Europe. From most to least affected.
+# Mortality rate by country in Europe. From worst to least affected.
 
 SELECT 
     location,
@@ -36,6 +36,29 @@ WHERE continent = 'Europe'
 GROUP BY location
 ORDER BY mortality_rate desc;
 
+# Joining tables to see total cases, total deaths and total vaccinations by continent.
+
+SELECT 
+    d.continent,
+    SUM(d.total_cases) AS total_cases,
+    SUM(d.total_deaths) AS total_deaths,
+    SUM(v.total_vaccinations) AS total_vaccinations
+FROM covid_deaths d
+LEFT JOIN covid_vaccinations v
+    ON d.continent = v.continent
+GROUP BY d.continent
+ORDER BY total_cases DESC, total_deaths DESC;
+
+# Joining tables to calculate the percentage of the population vaccinated.
+
+SELECT 
+    v.location,
+    MAX(v.total_vaccinations) / d.population * 100 AS vaccination_rate
+FROM covid_vaccinations v
+JOIN covid_deaths d
+    ON v.location = d.location
+WHERE d.population IS NOT NULL
+GROUP BY v.location, d.population;
 
 
 
