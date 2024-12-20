@@ -1,0 +1,41 @@
+select * from covid_deaths;
+
+select * from covid_vaccinations
+
+# Check missing values for critical columns.
+
+SELECT COUNT(*) AS total_rows, COUNT(total_cases), COUNT(total_deaths)
+from covid_deaths
+
+# Total cases and deaths grouped my year.
+
+SELECT 
+    YEAR(STR_TO_DATE(date, '%m/%d/%Y')) AS year,
+    MONTH(STR_TO_DATE(date, '%m/%d/%Y')) AS month,
+    SUM(total_cases) AS total_cases,
+    SUM(total_deaths) AS total_deaths
+FROM covid_deaths
+GROUP BY year, month;
+
+# Mortality rate by country. 
+
+SELECT 
+    location,
+    SUM(total_deaths) / SUM(total_cases) * 100 AS mortality_rate
+FROM covid_deaths
+GROUP BY location
+ORDER BY mortality_rate desc;
+
+# Mortality rate by country in Europe. From most to least affected.
+
+SELECT 
+    location,
+    SUM(total_deaths) / SUM(total_cases) * 100 AS mortality_rate
+FROM covid_deaths
+WHERE continent = 'Europe'
+GROUP BY location
+ORDER BY mortality_rate desc;
+
+
+
+
