@@ -1,0 +1,103 @@
+# Here I'm creating a bookstore sales database with tables for authors, books, customers and sales.
+
+CREATE DATABASE bookstore_db;
+USE bookstore_db;
+
+CREATE TABLE Authors (
+    author_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    country VARCHAR(50)
+);
+
+CREATE TABLE Books (
+    book_id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(200) NOT NULL,
+    author_id INT,
+    genre VARCHAR(50),
+    price DECIMAL(10,2),
+    stock_quantity INT,
+    FOREIGN KEY (author_id) REFERENCES Authors(author_id)
+);
+
+CREATE TABLE Customers (
+    customer_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE,
+    phone VARCHAR(15),
+    address VARCHAR(255)
+);
+
+CREATE TABLE Sales (
+    sale_id INT AUTO_INCREMENT PRIMARY KEY,
+    book_id INT,
+    customer_id INT,
+    sale_date DATE,
+    quantity INT,
+    total_amount DECIMAL(10,2),
+    FOREIGN KEY (book_id) REFERENCES Books(book_id),
+    FOREIGN KEY (customer_id) REFERENCES Customers(customer_id)
+);
+
+# Inserting data.
+
+INSERT INTO Authors (name, country) VALUES
+('Joel Grus', 'USA'),
+('Jake VanderPlas', 'USA'),
+('Andreas Müller', 'Germany'),
+('Aurélien Géron', 'France'),
+('Wes McKinney', 'USA');
+
+SELECT * FROM Authors;
+
+INSERT INTO Books (title, author_id, genre, price, stock_quantity) VALUES
+('Data Science from Scratch', 1, 'Data Science', 45.99, 10),
+('Python Data Science Handbook', 2, 'Data Science', 55.50, 7),
+('Introduction to Machine Learning', 3, 'Machine Learning', 65.00, 5),
+('Hands-On Machine Learning', 4, 'Machine Learning', 70.25, 8),
+('Python for Data Analysis', 5, 'Data Science', 50.75, 12),
+('Deep Learning with Python', 2, 'Deep Learning', 60.00, 6),
+('Artificial Intelligence: A Guide', 3, 'AI', 52.30, 9),
+('Machine Learning Yearning', 4, 'Machine Learning', 48.00, 11),
+('The Elements of Statistical Learning', 5, 'Statistics', 75.99, 4),
+('Bayesian Methods for Hackers', 1, 'Statistics', 65.50, 3);
+
+SELECT * FROM Books
+
+INSERT INTO Customers (name, email, phone, address) VALUES
+('Alice Johnson', 'alice@example.com', '123-456-7890', '123 Elm Street'),
+('Bob Smith', 'bob@example.com', '987-654-3210', '456 Oak Avenue'),
+('Charlie Brown', 'charlie@example.com', '555-234-5678', '789 Pine Road'),
+('Daisy Cooper', 'daisy@example.com', '444-678-1234', '321 Maple Lane'),
+('Edward Grey', 'edward@example.com', '666-345-9876', '654 Cedar Street'),
+('Fiona White', 'fiona@example.com', '222-789-4567', '876 Birch Blvd'),
+('George Black', 'george@example.com', '888-123-4567', '543 Spruce Court');
+
+SELECT * FROM Customers
+
+INSERT INTO Sales (book_id, customer_id, sale_date, quantity, total_amount) VALUES
+(1, 1, '2024-06-20', 1, 45.99),
+(2, 2, '2024-06-21', 2, 111.00),
+(5, 1, '2024-06-22', 1, 50.75),
+(3, 3, '2024-06-23', 1, 65.00),
+(4, 4, '2024-06-23', 2, 140.50),
+(6, 5, '2024-06-24', 1, 60.00),
+(7, 6, '2024-06-25', 1, 52.30),
+(8, 7, '2024-06-26', 2, 96.00),
+(9, 2, '2024-06-27', 1, 75.99),
+(10, 4, '2024-06-28', 1, 65.50),
+(2, 5, '2024-06-29', 1, 55.50),
+(1, 6, '2024-06-30', 2, 91.98);
+
+SELECT * FROM Sales
+
+# Altering tables: deleting, adding data.
+
+ALTER TABLE Customers
+DROP COLUMN address;
+
+DESCRIBE Customers;
+
+
+INSERT INTO Sales (book_id, customer_id, sale_date, quantity, total_amount) 
+VALUES (3, 1, CURDATE(), 1, 65.00);
+
