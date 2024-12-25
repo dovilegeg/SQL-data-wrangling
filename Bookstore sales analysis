@@ -1,0 +1,52 @@
+# Here I use a previously created bookstore sales data to conduct a sales performance and customer 
+# behavior analysis.
+
+# Top 5 books generating the highest total sales revenue.
+
+SELECT b.title AS Book_title, SUM(s.quantity) AS Total_Quantity_Sold, SUM(s.total_amount) AS Total_Revenue
+FROM Sales s
+LEFT JOIN Books b ON s.book_id = b.book_id
+GROUP BY b.title
+ORDER BY Total_Revenue DESC
+LIMIT 5;
+
+# 5 authors generating the highest total sales revenue
+
+SELECT a.name AS Author_Name, SUM(s.total_amount) AS Total_Sales
+FROM Sales s
+LEFT JOIN Books b ON s.book_id = b.book_id
+LEFT JOIN Authors a ON b.author_id = a.author_id
+GROUP BY a.name
+ORDER BY Total_Sales DESC;
+
+# Sales over time (for visualization)
+
+SELECT sale_date AS Sale_Date, SUM(total_amount) AS Daily_Revenue, SUM(quantity) AS Total_Books_Sold
+FROM Sales
+GROUP BY sale_date
+ORDER BY sale_date;
+
+# Monthly sales.
+
+SELECT DATE_FORMAT(s.sale_date, '%Y-%m') AS Sale_Month, SUM(s.total_amount) AS Total_Sales,
+  COUNT(s.sale_id) AS Total_Transactions
+FROM Sales s
+GROUP BY Sale_Month
+ORDER BY Sale_Month;
+
+# Most loyal customers.
+
+SELECT c.name AS Customer_Name,  COUNT(s.sale_id) AS Total_Purchases,
+    SUM(s.total_amount) AS Total_Spent
+FROM Sales s
+LEFT JOIN Customers c ON s.customer_id = c.customer_id
+GROUP BY c.name
+ORDER BY Total_Spent DESC;
+
+# Books with low stock.
+
+SELECT b.title AS Book_Title, a.name AS Author_Name, b.stock_quantity AS Remaining_Stock
+FROM Books b
+LEFT JOIN Authors a ON b.author_id = a.author_id
+WHERE b.stock_quantity < 5
+ORDER BY b.stock_quantity ASC;
